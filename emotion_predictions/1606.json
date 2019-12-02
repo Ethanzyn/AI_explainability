@@ -1,0 +1,39 @@
+{
+    "children": [
+        {
+            "name": "angry",
+            "color": "#CAB211",
+            "value": 0.02
+        },
+        {
+            "name": "disgust",
+            "color": "#C84439",
+            "value": 0.0
+        },
+        {
+            "name": "fear",
+            "color": "#B16712",
+            "value": 0.01
+        },
+        {
+            "name": "happy",
+            "color": "#DE961F",
+            "value": 0.06
+        },
+        {
+            "name": "sad",
+            "color": "#3E58B8",
+            "value": 0.05
+        },
+        {
+            "name": "surprise",
+            "color": "#33B189",
+            "value": 0.0
+        },
+        {
+            "name": "neutral",
+            "color": "#3E86B8",
+            "value": 0.86
+        }
+    ]
+}
