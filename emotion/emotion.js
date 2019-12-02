@@ -1,7 +1,9 @@
-var selectedEmotion; 
+var selectedEmotion = 0 ; 
 var selectedColor; 
 var fetchColor; 
 var img; 
+var mask;
+var grid;
 
 
 //d3.js 
@@ -53,7 +55,6 @@ d3.json("data1.json", function(data) {
       .on("mouseout", function(d) {
         d3.selectAll('rect').style("opacity",1)
         d3.selectAll('rect').style("stroke-width",1)
-        selectedEmotion = null;
     })
   
 
@@ -113,7 +114,7 @@ d3.json("data1.json", function(data) {
 
 
 var exampleGrid = []
-var gridSize = 16
+var gridSize = 24
 
 function createExample(){
   var noiseV = 0
@@ -134,13 +135,25 @@ function createExample(){
 
 }
 
+function preload(){
+  getMask("038393")
+  selectedEmotion = 0;
+}
+
 
 function setup (){
   var canvas = createCanvas(450, 450);
   canvas.parent('my_image');
   background(255);
-  img = loadImage("example.jpg")
+  img = loadImage("../Dataset/img_align_celeba/000108.jpg")
   createExample();
+  selectedEmotion = 0;
+  
+}
+
+function getMask(imgName){
+  var jn ="../lime_masks/" + imgName + ".json"
+  mask = loadJSON(jn)
 }
   
 
@@ -166,24 +179,25 @@ function draw(){
   background(0)
 
   image(img,0,0,450,450)
-  if(selectedEmotion != undefined){
+  if((selectedEmotion !== 0) && (selectedEmotion !== undefined) ){
     print(selectedEmotion)
     drawBorder();
+    emotion = String(selectedEmotion)
+    grid = mask[emotion]
     drawGrid(fetchColor)
-
   }
+
+  
 
 
 }
 
 function drawGrid(color){
-
   var c = color;
   c.setAlpha(150)
   for(let i=0; i < gridSize; i++){
     for(let j=0; j < gridSize; j++){
-
-      var n = exampleGrid[i][j]
+      var n = grid[i][j]
       if(n == 1){
         fill(c);
         noStroke();

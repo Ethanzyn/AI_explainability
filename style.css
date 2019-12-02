@@ -59,6 +59,11 @@ h1{
 
 }
 
+#percent {
+
+    color:#70884B
+}
+
 .nav{
     display: flex;
     background: black;
@@ -161,6 +166,7 @@ canvas{
     margin-left:10px;
     margin-top:20px;
     height: 40px;
+
 }
 
 #buttonSection {

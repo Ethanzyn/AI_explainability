@@ -4,43 +4,43 @@
             "name": "boss1",
             "children": [
                 {
-                    "name": "Angry",
+                    "name": "angry",
                     "color": "#CAB211",
                     "value": 0.1,
                     "colname": "level3"
                 },
                 {
-                    "name": "Disgust",
+                    "name": "disgust",
                     "color": "#C84439",
                     "value": 0.12,
                     "colname": "level3"
                 },
                 {
-                    "name": "Fear",
+                    "name": "fear",
                     "color": "#B16712",
                     "value": 0.03,
                     "colname": "level3"
                 },
                 {
-                    "name": "Happy",
+                    "name": "happy",
                     "color": "#DE961F",
                     "value": 0.35,
                     "colname": "level3"
                 },
                 {
-                    "name": "Sad",
+                    "name": "sad",
                     "color": "#3E58B8",
                     "value": 0.02,
                     "colname": "level3"
                 },
                 {
-                    "name": "Surprise",
+                    "name": "surprise",
                     "color": "#33B189",
                     "value":  0.18,
                     "colname": "level3"
                 },
                 {
-                    "name": "Neutral",
+                    "name": "neutral",
                     "color": "#3E86B8",
                     "value": 0.3,
                     "colname": "level3"
