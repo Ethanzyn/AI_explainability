@@ -1,4 +1,5 @@
 var img;
+var imgNum;
 var frame;
 var state;
 var frameC;
@@ -11,6 +12,9 @@ var commonColor;
 var buttonState;
 var mlPrediction = "false"
 var mask;
+var genderNote;
+var genderJSON;
+var emotionJSON;
 var genderMask;
 var MLgrid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -39,26 +43,27 @@ var MLgrid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 
 
 function setup(){
-    gridSize = 24;
+    gridSize = 26;
     buttonState = 0;
     common = 0; 
     var canvas = createCanvas(400, 400);
     canvas.parent('p5js');
     background(255,255,255,100);
-    img = loadImage("Dataset/img_align_celeba/034092.jpg")
+    
     for(let i=0; i < gridSize; i++){
         grid.push([])
         for(let j=0; j < gridSize; j++){
          grid[i].push(0)
         }
       }
-    var num = "034092";
     
+    var num = "1002";
+    img = loadImage("Dataset/img_align_celeba/1002.jpg")
+    imgNum = num + ".jpg"
+    genderJSON = loadJSON("face_classification/src/gender_results_1000.json")
+    emotionJSON = loadJSON("face_classification/src/emotion_results_1000.json")
+
     getMask(num)
-    //MLgrid = mask["woman"]
-
-
-    //   console.log(random_pic())
     
   }
 
@@ -67,16 +72,24 @@ function getMask(imgName){
     mask = loadJSON(jn)
 }
 
+function changeImage(){
+
+    var rNum = String(round(random(1000,2000)))
+    var url = "Dataset/img_align_celeba/" + rNum + ".jpg"
+    img = loadImage(url)
+    getMask(rNum)
+}
 
 
-
-
-
-
-
-
-
-
+function getGenderResult(imgName) {
+    var percentM = genderJSON[imgName].man 
+    var percentF = genderJSON[imgName].woman
+    if (percentM > percentF) {
+        return "man"
+    } else {
+        return "woman"
+    }
+}
 
 
 function draw(){
@@ -112,18 +125,46 @@ function draw(){
                   }
             }
           }
-    } else if (state == "compare") {
-        MLgrid = mask["man"]
+    } else if (state == "done"){
         var blockC = color(hex)
         blockC.setAlpha(140)
-      
+        drawFrame(frameC,frame)
         var common = 0; 
         var human = 0;
         var ML = 0; 
+        var gender = getGenderResult(imgNum)
+        MLgrid = mask[gender]
+        for(let i=0; i < gridSize; i++){
+            for(let j=0; j < gridSize; j++){
+                var n = grid[i][j]
+                var m = MLgrid[i][j]
+                if(n == 1){
+                    human ++ 
+                    fill(blockC)
+                    noStroke();
+                    var s = width/gridSize
+                    var y = i*s 
+                    var x = j*s
+                    rect(x,y,s,s)
+                    if(n==m){
+                        common++ 
+                    }
+                  } 
+                if(m == 1){
+                    ML ++ 
+                }
+            }
+          }
         
+          commonP = common*2/ (human + ML)
+
+    } else if (state == "compare") {
 
 
-
+        var gender = getGenderResult(imgNum)
+        MLgrid = mask[gender]
+        var blockC = color(hex)
+        blockC.setAlpha(140)
 
         for(let i=0; i < gridSize; i++){
             for(let j=0; j < gridSize; j++){
@@ -134,27 +175,27 @@ function draw(){
                 var x = j*s
                 noStroke();
                 if(n == 1){
-                    human ++ 
                     fill(blockC);
                     rect(x,y,s,s)
                     if(n==m){
-                        common++ 
                         blendMode(DIFFERENCE)
-                    }
+                    } 
+
                   } 
                 if(m == 1){
-                    ML ++ 
                     fill(c2);
-                    rect(x,y,s,s)   
+                    rect(x,y,s,s)  
+
                 }
                 blendMode(BLEND)
             }
           }
+
         drawFrame(frameC,frame)
         noStroke();
         
         if(humanPrediction == mlPrediction){
-            commonColor = "#BD53AF"
+            commonColor = "#5F54BD"
         } else {
         }
 
@@ -164,20 +205,31 @@ function draw(){
             
 
         }
- 
-          commonP = common*2/ (human + ML)
-          print(human,ML,common,commonP)
+
           fill(238,67,21)
           rect(100,5,100,40); 
           fill(255);
-          if(mlPrediction == "false"){
+          if(gender == 'woman'){
               text("woman",150,30)
           } else {
               text("man",150,30)
           }
 
-    }
+    } 
 
+}
+
+function showInstruction(){
+    var parent = document.getElementById("genderSection")
+    var text = document.createElement("h6");
+    var icon = document.createElement("h1")
+    text.setAttribute("id","instruction");
+    icon.setAttribute("id","drawMoji")
+    text.innerHTML = "Shade in the area with your mouse";
+    icon.innerHTML = "✏️";
+    parent.appendChild(text);
+    parent.appendChild(icon);
+    text.style.transition = "opacity 0.5s"
 }
 
 
@@ -185,9 +237,11 @@ function draw(){
 
 function changeButton(x1,x2,y1,y2){
     if(buttonState  == 0 ){
+
         var buttonSection = document.getElementById("buttonSection");
         buttonSection.removeChild(buttonSection.childNodes[1])
         buttonSection.removeChild(buttonSection.childNodes[2])
+
         addElement("buttonSection","div","button",x1,x2)
         addElement("buttonSection","div","button",y1,y2)
         buttonState = 1
@@ -199,16 +253,20 @@ function changeButton(x1,x2,y1,y2){
         addElement("buttonSection","div","button",x1,x2)
         document.getElementById("compare").style.width = "380px"
         document.getElementById("compare").onclick = function(){
-            var tag1 = "<span id ='percent'>"
-            var tag2 = "</span>"
-            var str = ['Base on reference area, you "think" ' + tag1+String(round(commonP*100))+"% "+tag2+"like this AI"]
-            typestuff(commonP,str)
-           
+            if(state == "done"){
+                addLegend();
+                state = "compare"
+                var tag1 = "<span id ='percent'>"
+                var tag2 = "</span>"
+                var str = ['Bases on referenced area, you "think" ' + tag1+String(round(commonP*100))+"% "+tag2+"like this AI"]
+                typestuff(commonP,str)
+            }
+        
         }
         
     }
-
 }
+
 
 function addElement(parentId, elementTag, elementClass, html,id) {
     // Adds an element to the document
@@ -223,8 +281,6 @@ function addElement(parentId, elementTag, elementClass, html,id) {
     newElement.appendChild(h5);
     p.appendChild(newElement);
 }
-
-
 function changeGrid(id){
     if(id == "reset") {
         for(let i=0; i < gridSize; i++){
@@ -233,18 +289,37 @@ function changeGrid(id){
             }
           }
     } else if(id == "done"){
-        state = "compare"
-        buttonState = 2 
-  
-        changeButton("Compare with AI","compare")
+        state = "done"
+        var icon = document.getElementById("drawMoji")
+        var text = document.getElementById("instruction")
+        icon.parentNode.removeChild(icon);
+        text.parentNode.removeChild(text);
 
+        
+        buttonState = 2 
+        changeButton("Compare with AI","compare")
+        
+
+    } 
+}
+
+function addLegend(){
+    var elem = document.createElement("img")
+    if(humanPrediction == "false"){
+        elem.setAttribute("src", "legend1.png");
+
+    } else {
+        elem.setAttribute("src", "legend2.png");
     }
+    elem.setAttribute("id","legend")
+    var parent = document.getElementById("genderSection")
+    parent.appendChild(elem)
+
 }
 
 
 
 function mouseDragged(){
-    print(state)
 
     if(state == "draw"){
         changeButton("Reset","reset","Done","done");
@@ -263,7 +338,6 @@ function mouseDragged(){
     }
    
 }
-    
 
 function typestuff(t,string){
 
@@ -275,7 +349,7 @@ function typestuff(t,string){
     if(string != undefined ){
         var typing= string
     } else {
-        var typing = ['Hopefully that’s not hard.So,what makes you think this is a ' +tag1+t+tag2+"?"]
+        var typing = ['Hopefully that’s not hard.So, what parts of the face make you think this is a ' +tag1+t+tag2+"?"]
     }
 
     var options = {
@@ -303,14 +377,30 @@ function drawFrame(c,t) {
 }
 
 function buttonHover(x,y){
+
+    if(genderNote == undefined){
+        var note = document.createElement('img')
+        note.setAttribute("src","genderNote.png")
+        var parent = document.getElementById("genderSection")
+        note.setAttribute("id","genderNote")
+        parent.appendChild(note);
+        genderNote = 0;
+
+
+    }
+
+    
     if(state == undefined){
+
         if(x == 'woman'){
             frame = "woman"
             y.style.backgroundColor = "#3BA4D6"
+
         } else {
             frame = 'man'
             y.style.backgroundColor = "#F5A623"
         }
+
     }
 
 
@@ -327,14 +417,21 @@ function buttonNormal(x){
 }
 
 function selection(x,y){
+    document.getElementById('genderNote').style.display = "none";
+
 
     var all = document.getElementsByClassName("button");
     for (var i = 0; i < all.length; i++) {
         all[i].style.backgroundColor = 'transparent';
-
       }
     y.style.borderWidth = "2px"
+    if(state != "draw"){
+        showInstruction()
+
+    }
     state = "draw"
+
+    
     frame = x
     if(x == 'woman'){
         frameC = color("#3BA4D6")
@@ -347,8 +444,6 @@ function selection(x,y){
     }
 
     typestuff(x)
-
-
 
 }
 

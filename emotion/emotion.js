@@ -4,14 +4,31 @@ var fetchColor;
 var img; 
 var mask;
 var grid;
-
+var EmotionJSON; 
 
 //d3.js 
 var margin = {top: 0, right: 0, bottom: 0, left: 0},
-  width = 400 - margin.left - margin.right,
-  height = 400 - margin.top - margin.bottom;
+  width = 450 - margin.left - margin.right,
+  height = 450 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
+
+// read json data
+var JSONurl
+function preload(){
+  getMask("1001")
+  selectedEmotion = 0;
+  
+}
+
+
+
+
+if(JSONurl == undefined){
+  JSONurl = "../emotion_predictions/1001.json"
+
+}
+
 var svg = d3.select("#my_dataviz")
 .append("svg")
   .attr("width", width + margin.left + margin.right)
@@ -20,8 +37,8 @@ var svg = d3.select("#my_dataviz")
   .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-// read json data 
-d3.json("data1.json", function(data) {
+
+d3.json(JSONurl, function(data) {
   // Give the data to this cluster layout:
   var root = d3.hierarchy(data).sum(function(d){ return d.value})
   
@@ -38,57 +55,72 @@ d3.json("data1.json", function(data) {
     .data(root.leaves())
     .enter()
     .append("rect")
-      .attr('x', function (d) { return d.x0; })
       .attr('y', function (d) { return d.y0; })
-      .attr('width', function (d) { return d.x1 - d.x0; })
       .attr('height', function (d) { return d.y1 - d.y0; })
+      .transition()
+      .duration(900)
+      .attr('x', function (d) { return d.x0; })
+      .attr('width', function (d) { return d.x1 - d.x0; })
       .style("stroke", "white")
       .style("fill", function(d) {
         return d.data.color})
-      .on("mouseover", function(d) {
-          d3.selectAll('rect').style("opacity",0.5)
-          d3.select(this).style("opacity",1)
-          d3.select(this).style("stroke-width",3)
-          selectedEmotion = d.data.name 
-          selectedColor = d.data.color
+
+      svg
+        .selectAll("rect")
+        .data(root.leaves())
+        .on("mouseover", function(d) {
+            d3.selectAll('rect').style("opacity",0.5)
+            d3.select(this).style("opacity",1)
+            d3.select(this).style("stroke-width",3)
+            selectedEmotion = d.data.name 
+            selectedColor = d.data.color
+        })
+        .on("mouseout", function(d) {
+          d3.selectAll('rect').style("opacity",1)
+          d3.selectAll('rect').style("stroke-width",1)
+          selectedEmotion = 0; 
       })
-      .on("mouseout", function(d) {
-        d3.selectAll('rect').style("opacity",1)
-        d3.selectAll('rect').style("stroke-width",1)
-    })
   
+  var texts = svg.selectAll("text")
+                .data(root.leaves())
+                .enter()
 
   // and to add the text labels
-  svg
-    .selectAll("text")
-    .data(root.leaves())
-    .enter()
+  texts 
+ 
     .append("text")
+      .attr("y", function(d){ return (d.y0+d.y1)/2 }) 
+      .attr("fill", "white")
+      .attr("text-anchor", "middle")
+      .transition()
+      .duration(900)
       .attr("x", function(d){ return (d.x0+d.x1)/2}) 
-      .attr("y", function(d){ return (d.y0+d.y1)/2 })    // +20 to adjust position (lower)
+         // +20 to adjust position (lower)
       .attr('font-family','Source Code Pro')
       .style('font-weight','600')
       .text(function(d){ return d.data.name })
       .attr("font-size", function(d) { return findFontSize(d.data.value);} )
-      .attr("fill", "white")
-      .attr("text-anchor", "middle")
 
-    svg
-    .selectAll("vals")
-    .data(root.leaves())
-    .enter()
+
+  texts 
     .append("text")
       .attr('font-family','Source Code Pro')
       .attr("text-anchor", "middle")
-      .attr("x", function(d){ return (d.x0+d.x1)/2})    // +10 to adjust position (more right)
+      .attr("fill", "white")
       .attr("y", function(d){ return (d.y0+d.y1)/2 + Number(findFontSize(d.data.value))/1.2})    // +20 to adjust position (lower)
+      .transition()
+      .duration(900)
+      .attr("x", function(d){ return (d.x0+d.x1)/2})    // +10 to adjust position (more right)
       .text(function(d){ return "Weight:"+ d.data.value })
       .attr("font-size", function(d) { return subtext(d.data.value);})
-      .attr("fill", "white")
+      
 
   
   function findFontSize(value){
     if(value < 0.1) {
+      if(value < 0.02){
+        return "0"
+      } 
       return "14"
     } else {
       var fs; 
@@ -135,19 +167,16 @@ function createExample(){
 
 }
 
-function preload(){
-  getMask("038393")
-  selectedEmotion = 0;
-}
 
 
 function setup (){
   var canvas = createCanvas(450, 450);
   canvas.parent('my_image');
   background(255);
-  img = loadImage("../Dataset/img_align_celeba/000108.jpg")
+  img = loadImage("../Dataset/img_align_celeba/1001.jpg")
   createExample();
   selectedEmotion = 0;
+
   
 }
 
@@ -155,6 +184,27 @@ function getMask(imgName){
   var jn ="../lime_masks/" + imgName + ".json"
   mask = loadJSON(jn)
 }
+
+function changeImage(){
+
+  var rNum = String(round(random(1000,2000)))
+  var url = "../Dataset/img_align_celeba/" + rNum + ".jpg"
+  var jurl = "../emotion_predictions/" + rNum + ".json"
+  JSONurl = jurl 
+  img = loadImage(url)
+  getMask(rNum)
+
+}
+
+// function mousePressed(){
+//   if((mouseX < 400) && (mouseY < 400)){
+//       print(mouseX)
+//       changeImage();
+     
+//   }
+
+// }
+
   
 
 
@@ -212,6 +262,120 @@ function drawGrid(color){
   
   
 
+
+}
+
+function changeImage() {
+  var rNum = String(round(random(1000,2000)))
+  var url = "../Dataset/img_align_celeba/" + rNum + ".jpg"
+  var jurl = "../emotion_predictions/" + rNum + ".json"
+  console.log(jurl)
+  JSONurl = jurl 
+  img = loadImage(url)
+  getMask(rNum)
+  
+
+  d3.json(jurl, function(data) {
+    // Give the data to this cluster layout:
+    var root = d3.hierarchy(data).sum(function(d){ return d.value})
+    
+    // Here the size of each leave is given in the 'value' field in input data
+    // Then d3.treemap computes the position of each element of the hierarchy
+    d3.treemap()
+      .size([width, height])
+      .padding(0)
+      (root)
+
+    var rect = svg.selectAll('rect').data(root.leaves())
+    var texts = svg.selectAll('text').data(root.leaves())
+
+
+    rect.exit().remove();
+    rect.enter().append('rect')
+
+    rect.transition()
+      .duration(750)
+      .attr('x', function (d) { return d.x0; })
+      .attr('y', function (d) { return d.y0; })
+      .attr('width', function (d) { return d.x1 - d.x0; })
+      .attr('height', function (d) { return d.y1 - d.y0; })
+      .style("stroke", "white")
+      .style("fill", function(d) {
+        return d.data.color})
+    
+    rect
+      .on("mouseover", function(d) {
+          d3.selectAll('rect').style("opacity",0.5)
+          d3.select(this).style("opacity",1)
+          d3.select(this).style("stroke-width",3)
+          selectedEmotion = d.data.name 
+          selectedColor = d.data.color
+      })
+      .on("mouseout", function(d) {
+        d3.selectAll('rect').style("opacity",1)
+        d3.selectAll('rect').style("stroke-width",1)
+        selectedEmotion = 0; 
+    })
+
+    texts.exit().remove();
+    texts.enter().append('text')
+      .attr('font-family','Source Code Pro')
+      .style('font-weight','600')
+  
+    texts.transition()
+      .duration(750)
+      .attr("x", function(d){ return (d.x0+d.x1)/2}) 
+      .attr("y", function(d){ return (d.y0+d.y1)/2 })    // +20 to adjust position (lower)
+      .text(function(d){ return d.data.name })
+      .attr("font-size", function(d) { return findFontSize(d.data.value);} )
+      .attr("fill", "white")
+      .attr("text-anchor", "middle")
+
+    
+      svg
+        .selectAll("vals")
+        .data(root.leaves())
+        .enter()
+        .append("text")
+        .attr('font-family','Source Code Pro')
+        .attr("text-anchor", "middle")
+        .attr("x", function(d){ return (d.x0+d.x1)/2})    // +10 to adjust position (more right)
+        .attr("y", function(d){ return (d.y0+d.y1)/2 + Number(findFontSize(d.data.value))/1.2})    // +20 to adjust position (lower)
+        .text(function(d){ return "Weight:"+ d.data.value })
+        .attr("font-size", function(d) { return subtext(d.data.value);})
+        .attr("fill", "white") 
+        .attr( "fill-opacity", 0 ).transition().delay(750 )
+           .attr( "fill-opacity", 1 )
+  
+    function findFontSize(value){
+      if(value < 0.1) {
+        if(value < 0.02){
+          return "0"
+        } 
+        return "14"
+      } else {
+        var fs; 
+        fs = 12 + Math.round(value*90)
+        return String(fs)
+      }
+    }
+  
+    function subtext(value){
+      if(value < 0.05) {
+        return "0"
+      } else {
+        var fs; 
+        fs = 10 + Math.round(value*20)
+        return String(fs)
+      }
+    }
+  
+  
+  })
+  
+
+  
+    
 
 }
 

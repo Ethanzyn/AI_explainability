@@ -17,7 +17,7 @@ body{
     background-size:cover;
     margin:0px;
     padding:0px;
-    border:solid 2px;
+    border:solid 1px;
     border-color: white;
     height:800px;
     
@@ -117,6 +117,7 @@ li {
 }
 
 
+
 #scrollLine {
     display:block;
     margin:auto;
@@ -126,14 +127,52 @@ li {
 .section {
     background-image: url("grid.png");
     background-repeat: repeat;
-    height:800px;
+    height:850px;
     background-size:cover;
     margin:0px;
     padding:0px;
-    border:solid 2px;
+    border:solid 1px;
+    /* border-top: transparent;  */
     border-color: white;
     cursor: url('cursor.gif'),auto;
+}
 
+.footer {
+    background-image: url("grid.png");
+    background-repeat: repeat;
+    background-size:cover;
+    margin:0px;
+    padding:0px;
+    border:solid 1px;
+    border-top:none;
+    border-color: white;
+    cursor: url('cursor.gif'),auto;
+    height:100px;
+    display: flex;
+
+}
+
+#drawMoji {
+    position:absolute;
+    bottom:-450px;
+    margin:auto;
+    left:15%;
+    font-size: 64px;
+    animation:fadein 1s ease-in;
+
+}
+
+#instruction {
+    position:absolute;
+    bottom:-450px;
+    margin:auto;
+    right:10%;
+    text-align: center;
+    font-size: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 300;
+    width:200px;
+    animation:fadein 1s ease-in;
 
 
 }
@@ -146,13 +185,13 @@ li {
     margin:auto;
     text-align: center;
     padding-top:80px;
-    max-width: 800px;
+    max-width: 720px;
 }
-
 #p5js{
-    padding-top:50px;
+    padding-top:10px;
     margin: auto;
     width: 400px;
+
 }
 
 canvas{
@@ -198,14 +237,12 @@ canvas{
 }
 
 #visComponent {
-    padding-top:50px;
     display:flex;
     margin: auto;
     max-width: 900;
 }
 
 #tSNEp5 {
-
     margin: auto;
     max-width: 1000px;
     padding-top:50px;
@@ -219,3 +256,81 @@ canvas{
 
 }
 
+#changeImage {
+    text-decoration: underline;
+    max-width: 900;
+    margin: auto;
+    padding-top:50px;
+    padding-bottom:10px;
+    
+    
+
+}
+
+#changeImage2 {
+    text-decoration: underline;
+    padding-top:50px;
+    margin: auto;
+    width: 400px;
+    
+    
+
+}
+
+#legend {
+    width:250px;
+    position: absolute;
+    bottom: -450px;
+    margin: auto;
+    right:10%;
+    animation:fadein 1s ease-in;
+}
+
+#genderNote {
+
+    width:250px;
+    position:absolute;
+    bottom:-650px;
+    animation:fadein 1s ease-in;
+    margin-left: auto; 
+    margin-right:auto;
+    left:0;
+    right:0;
+    /* padding-right:700px; */
+    margin-right:65%;
+
+
+
+
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+#copyright {
+
+    padding-left: 40px;
+    padding-top:20px;
+    margin:0px;
+    width: 300px;
+    font-size: 18px;
+    border-right:solid 1px;
+    padding-right:20px;
+
+}
+
+#credit {
+
+    padding-left: 60px;
+    padding-top:20px;
+    margin:0px;
+    line-height: 24px;
+}
+
+#credit a {
+    color:white;
+
+
+}
