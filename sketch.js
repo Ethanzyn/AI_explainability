@@ -76,6 +76,7 @@ function changeImage(){
 
     var rNum = String(round(random(1000,2000)))
     var url = "Dataset/img_align_celeba/" + rNum + ".jpg"
+    imgNum = rNum + ".jpg"
     img = loadImage(url)
     getMask(rNum)
 }
