@@ -1,6 +1,6 @@
 // MAIN SKETCH FOR FINAL CELEBA SAMPLE
 
-let cloudLocations, gridLocations;
+let locations;
 let females, femalesTable;
 let tSNEimages = [];
 let tSNEmode;
@@ -20,49 +20,17 @@ let selected;
 let scaleSlider;
 let scaleSliderY, scaleSliderX, scaleSliderW;
 
-let parentDiv, parentDivRect;
+let outlineColor, femaleColor;
+let angryColor, happyColor, sadColor, fearColor, surpriseColor, neutralColor, disgustColor;
+let overlayAlpha = 65;
 
-let tx = 0;
-let ty = 0;
-let prevPosition = [0,0]
-
-let outlineColor;
+let emotionAdjectiveDict = {"angry" : "angry", "happy" : "happy", "surprise" : "surprised",
+							"neutral" : "neutral", "disgust" : "disgusted", "fear" : "fearful",
+							"sad" : "sad"}
 
 function preload() {
-	cloudLocations = loadJSON('assets/cloudLocations.json');
-	gridLocations = loadTable('assets/gridLocations.csv');
-
+	locations = loadJSON("assets/allDataFinal.json")
 	sourceCode = loadFont("assets/SourceCodePro-Regular.ttf")
-
-	femalesTable = loadTable('assets/lists/femalesList')
-	angryTable = loadTable('assets/lists/angryList')
-	disgustTable = loadTable('assets/lists/disgustList')
-	fearTable = loadTable('assets/lists/fearList')
-	happyTable = loadTable('assets/lists/happyList')
-	sadTable = loadTable('assets/lists/sadList')
-	surpriseTable = loadTable('assets/lists/surpriseList')
-	neutralTable = loadTable('assets/lists/neutralList')
-}
-
-function formatList(lst){
-	for (let i = 0; i < lst.length; i++){
-		lst[i] = int(lst[i][0])
-	}
-}
-
-function setupTables(){
-	females = femalesTable.getArray();
-	angryList = angryTable.getArray();
-	disgustList = disgustTable.getArray();
-	fearList = fearTable.getArray();
-	happyList = happyTable.getArray();
-	sadList = sadTable.getArray();
-	surpriseList = surpriseTable.getArray();
-	neutralList = neutralTable.getArray();
-
-	for (lst of [females, angryList, disgustList, fearList, happyList, sadList, surpriseList, neutralList]){
-		formatList(lst)
-	}
 }
 
 function setup() {
@@ -70,50 +38,72 @@ function setup() {
 	var canvas = createCanvas(cWidth, cHeight);
 	canvas.parent('tSNEp5');
 
-	parentDiv = document.getElementById("tSNEp5");
-	parentDivRect = tSNEp5.getBoundingClientRect()
-
 	colorMode(HSL, 100)
 	textFont(sourceCode)
 	textAlign(LEFT, TOP)
-	outlineColor = color(5, 98, 50)
+	outlineColor = color(5, 98, 50);
+	femaleColor = color(13, 70, 70, overlayAlpha);
+	angryColor = color(0, 70, 70, overlayAlpha);
+	disgustColor = color(40, 70, 70, overlayAlpha);
+	happyColor = color(13, 70, 70, overlayAlpha);
+	sadColor = color(50, 70, 70, overlayAlpha);
+	neutralColor = color(70, 70, 70, overlayAlpha);
+	fearColor = color(20, 70, 70, overlayAlpha);
+	surpriseColor = color(90, 70, 70, overlayAlpha)
 
 	tSNEmode = "grid"
-	selected = "gender"
-
-	setupTables();
 	getImages();
 
-	scaleSlider = createSlider(1, 3, 1)
-	scaleSliderX = cWidth/2
-	scaleSliderY = 920
-	scaleSliderW = cWidth/10;
-	scaleSlider.position(scaleSliderX, scaleSliderY)
-	scaleSlider.style('width', 'scaleSliderW')
-	scaleSlider.parent('tSNEp5')
+	/// BUTTON VALUES ///
+	selected = "emotion"
+	showOverlays = true
+	///////////////////////
+	makeDOMelements();
 
 }
 
+function makeDOMelements(){
+	// slider
+	scaleSlider = createSlider(1, 3, 1)
+	scaleSliderX = cWidth/2
+	scaleSliderY = 1050
+	scaleSliderW = cWidth/20;
+	scaleSlider.position(scaleSliderX, scaleSliderY)
+	scaleSlider.style('width', 'scaleSliderW')
+	scaleSlider.parent('tSNEp5')
+	// mode choice
+	modeRadio = createRadio();
+	modeRadio.option('gender prediction');
+	modeRadio.option('emotion prediction');
+	modeRadio.style('width', '190px');
+	// show overlays
+	overlayRadio = createRadio();
+	overlayRadio.option('show overlays');
+	overlayRadio.option('hide overlays');
+	overlayRadio.style('width', '160px');
+}
+
 function getImages(){
+	let keys = [];
+   	for(let k in locations) keys.push(k);
+
 	for (let i = 0; i < datasetSize; i++){
 		let location, x, y, isFemale;
 
-		location = cloudLocations[i]
+		location = locations[keys[i]]
 
 		// get different locations depending on mode
 		if (tSNEmode == "cloud") {
-			x = map(float(location.point[0]), 0, 1, 0, width)
-			y = map(float(location.point[1]), 0, 1, 0, height)
+			xEmotion = map(location.cloudPointEmotion[0], 0, 1, 0, width)
+			yEmotion = map(location.cloudPointEmotion[1], 0, 1, 0, height)
+			xGender = map(location.cloudPointGender[0], 0, 1, 0, width)
+			yGender = map(location.cloudPointGender[1], 0, 1, 0, height)
 		}
 		else if (tSNEmode == "grid") {
-			let pos = (gridLocations.get(i, 0)).split(";")
-			x = float(pos[0])
-			y = float(pos[1])
-			x = map(x, 0, xRows, 0, width)
-			y = map(y, 0, yRows, 0, height)
-		}
-		else {
-			console.log("tSNE mode not set!")
+			xEmotion = map(location.gridPointEmotion[0], 0, xRows, 0, width)
+			yEmotion = map(location.gridPointEmotion[1], 0, yRows, 0, height)
+			xGender = map(location.gridPointGender[0], 0, xRows, 0, width)
+			yGender = map(location.gridPointGender[1], 0, yRows, 0, height)
 		}
 
 	    // get path to image file and its number
@@ -123,21 +113,12 @@ function getImages(){
 	    let path = "sample/" + str(filename)
 	    let img = loadImage(path)
 
-	    let wholeImage = [x, y, num, img]
+	    let gender = location.gender
+	    let emotion = location.emotion
 
-	    // is this image in the females object?
-	    if (females.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
+	    let wholeImage = [xEmotion, yEmotion, xGender, yGender, num, img, gender, emotion]
 
-	    // 5. happy, 6. angry, 7. disgust, 8. fear, 9. sad, 10. surprised, 11. neutral
-	    if (happyList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
-	    if (angryList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
-	    if (disgustList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
-	    if (fearList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
-	    if (sadList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
-	    if (surpriseList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
-	    if (neutralList.includes(num)){wholeImage.push(true)} else {wholeImage.push(false)};
-
-	    tSNEimages.push(wholeImage)
+	    tSNEimages.push(wholeImage);
 	}
 }
 
@@ -155,32 +136,27 @@ function draw() {
 	closestDistance = 10000
 	winner = []
 
+	if (modeRadio.value()) {selected = (modeRadio.value() == "gender prediction") ? "gender" : "emotion"}
+	if (overlayRadio.value()) {showOverlays = (overlayRadio.value() == "show overlays") ? true : false}
+
 	push();
 	scaleFactor = scaleSlider.value()
 	scale(scaleFactor)
 
-	// translate(tx, ty)
-
 	for (let i = 0; i < tSNEimages.length; i++){
 		let curr = tSNEimages[i]
-		let x = curr[0]
-		let y = curr[1]
-		let num = curr[2]
-		let img = curr[3]
-		let isFemale = curr[4]
-		let isHappy = curr[5]
-		let isAngry = curr[6]
-		let isDisgust = curr[7]
-		let isFear = curr[8]
-		let isSad = curr[9]
-		let isSurprise = curr[10]
-		let isNeutral = curr[11]
+		let x = (selected == "emotion") ? curr[0] : curr[2]
+		let y = (selected == "emotion") ? curr[1] : curr[3]
+		let num = curr[4]
+		let img = curr[5]
+		let gender = curr[6]
+		let emotion = curr[7]
 		let w = picScale
 		let h = w
 		image(img, x, y, w, h)
 
 	    // calculate distance from the mouse
-	    let currDistance = distance((mouseX - tx)/scaleFactor, (mouseY - ty)/scaleFactor, x + w/2, y + h/2)
+	    let currDistance = distance(mouseX/scaleFactor, mouseY/scaleFactor, x + w/2, y + h/2)
 	    //console.log(["at i = ", i, " distance = ", currDistance])
 	    if (currDistance < closestDistance){
 	    	closestDistance = currDistance
@@ -190,57 +166,84 @@ function draw() {
 	    	winner = curr
 	    }
 
-	    // if in females list and mode is female, draw overlay
-	    noStroke();
-	    noFill();
-	    if (selected == "gender"){
-		    if (isFemale) {
-		    	fill(13, 70, 70, 70)
-		    }
+	    // overlays
+	    if (showOverlays){
+	    	drawOverlay(x, y, w, h, gender, emotion)
 		}
-		else if (selected == "emotion"){
-			// negative emos
-			if (isAngry || isDisgust || isSad) {
-				fill(0, 70, 70, 70)
-			}
-			// happy
-			else if (isHappy) {
-				fill(30, 70, 70, 70)
-			}
-			// neutral
-			else if (isNeutral) {
-				fill(60, 70, 70, 70)
-			}
-			// other emos
-			else {
-				fill(80, 70, 70, 70)
-			}
-		}
-		rect(x, y, w, h)
 	}
+
+	// draw tooltip
 	if (winner[2] != undefined){
 		drawWinner(winner)
 	}
 	pop();
-	drawSliderBg();
+	//drawSliderBg();
+}
+
+// draw overlays
+function drawOverlay(x, y, w, h, gender, emotion){
+    noStroke();
+    noFill();
+    if (selected == "gender"){
+
+	    if (gender == "woman") {
+	    	fill(femaleColor)
+	    }
+
+	}
+	else if (selected == "emotion"){
+
+		switch(emotion){
+			case "happy":
+				fill(happyColor)
+				break
+			case "sad":
+				fill(sadColor)
+				break
+			case "angry":
+				fill(angryColor)
+				break
+			case "neutral":
+				fill(neutralColor)
+				break
+			case "disgust":
+				fill(disgustColor)
+				break
+			case "surprise":
+				fill(surpriseColor)
+				break
+			case "fear":
+				fill(fearColor)
+				break
+		}
+
+	}
+	rect(x, y, w, h)
 }
 
 // draw rectangle around slider
 function drawSliderBg(){
+	let x = scaleSliderX - 50
+	let y = scaleSliderY - 400
+	let w = scaleSliderW*1.5
 	noStroke();
 	fill(100);
-	rect(scaleSliderX - 50, scaleSliderY - 375, scaleSliderW*1.5, 40)
+	rect(x, y, w, 60)
+	fill(0);
+	textAlign(CENTER, TOP)
+	text("zoom", x + w/2, y + yMarg)
 }
 
 // draw tooltip for closest image to mouse
 function drawWinner(winner){
-	let x = winner[0]
-	let y = winner[1]
-	let num = winner[2]
-	let img = winner[3]
-	let w = winner[3].width/scaleFactor/1.5
-	let h = winner[3].height/scaleFactor/1.5
-	let isFemale = winner[4]
+	let x = (selected == "emotion") ? winner[0] : winner[2]
+	let y = (selected == "emotion") ? winner[1] : winner[3]
+	let num = winner[4]
+	let img = winner[5]
+	let w = winner[5].width/scaleFactor/1.2
+	let h = winner[5].height/scaleFactor/1.2
+	let gender = winner[6]
+	let emotion = winner[7]
 	let winnerXOffset = picScale
 	let winnerYOffset = picScale
 	let textboxY = y + h + winnerYOffset
@@ -252,31 +255,32 @@ function drawWinner(winner){
 	rect(x, y, winnerXOffset, winnerYOffset)
 
 	// decide which corner caption will be drawn from
-	let rectHeight = h + h/3
+	let rectHeight = h + h/2
 	// bottom right
-	if (x <= cWidth - w && y <= cHeight - rectHeight){
+	if (x + winnerXOffset <= cWidth - w && y <= cHeight - rectHeight - winnerYOffset){
 		image(img, x + winnerXOffset, y + winnerYOffset, w, h)
-		drawCaption(x + winnerXOffset, y + h + winnerYOffset, w, h, num, isFemale)
+		drawCaption(x + winnerXOffset, y + h + winnerYOffset, w, h, num, gender, emotion)
 	}
 	// bottom left
-	else if (x >= cWidth - w && y <= cHeight - rectHeight){
+	else if (x + winnerXOffset >= cWidth - w && y <= cHeight - rectHeight - winnerYOffset){
 		image(img, x - w, y + winnerYOffset, w, h)
-		drawCaption(x - w, y + h + winnerYOffset, w, h, num, isFemale)
+		drawCaption(x - w, y + h + winnerYOffset, w, h, num, gender, emotion)
 	}
 	// top right
-	else if (x <= cWidth - w && y >= cHeight - rectHeight){
+	else if (x <= cWidth - w && y >= cHeight - rectHeight - winnerYOffset){
 		image(img, x + winnerXOffset, y - rectHeight, w, h)
-		drawCaption(x + winnerXOffset, y - h/3, w, h, num, isFemale)
+		drawCaption(x + winnerXOffset, y - h/2, w, h, num, gender, emotion)
 	}
 	// top left
-	else if (x >= cWidth - w && y >= cHeight - rectHeight){
+	else if (x >= cWidth - w && y >= cHeight - rectHeight - winnerYOffset){
 		image(img, x - w, y - rectHeight, w, h)
-		drawCaption(x - w, y - h/3, w, h, num, isFemale)
+		drawCaption(x - w, y - h/2, w, h, num, gender, emotion)
 	}
 
 }
 
-function drawCaption(x, y, w, h, num, isFemale){
+function drawCaption(x, y, w, h, num, gender, emotion){
+	textAlign(LEFT, TOP)
 	// white rect
 	noStroke()
 	fill(100)
@@ -284,8 +288,13 @@ function drawCaption(x, y, w, h, num, isFemale){
 	// text
 	fill(0)
 	textSize(12/scaleFactor)
-	text("Image #" + str(num), x + xMarg/scaleFactor, y + yMarg/scaleFactor)
-	text("Female = " + str(isFemale), x + xMarg/scaleFactor, y + yMarg*5/scaleFactor);
+	let textX =  x + xMarg * 2 /scaleFactor;
+	let textYOffset = yMarg * 2 /scaleFactor;
+	text("Image #" + str(num), textX, y + textYOffset);
+	let article = (emotion == "angry") ? "an" : "a"
+	let string = "AI thinks this is\n" + article + " " + emotionAdjectiveDict[emotion] 
+				 + " " + gender + "."
+	text(string, textX, y + textYOffset * 3)
 
 	// colorful outline
 	noFill();
@@ -293,13 +302,3 @@ function drawCaption(x, y, w, h, num, isFemale){
 	stroke(outlineColor)
 	rect(x, y - h, w, 3*h/2) // for entire tooltip
 }
-
-// function mouseDragged(){
-// 	tx = (mouseX - prevPosition[0]);
-// 	ty = (mouseY - prevPosition[1]);
-
-// 	console.log([tx, ty])
-// 	prevPosition[0] = tx
-// 	prevPosition[1] = ty
-	
-// }
