@@ -80,7 +80,7 @@ function makeDOMelements(){
 	overlayRadio = createRadio();
 	overlayRadio.option('show overlays');
 	overlayRadio.option('hide overlays');
-	overlayRadio.style('width', '160px');
+	overlayRadio.style('width', '190px');
 }
 
 function getImages(){
