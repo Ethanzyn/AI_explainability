@@ -1,9 +1,9 @@
-// MAIN SKETCH FOR FINAL CELEBA SAMPLE
+// MAIN SKETCH FOR FINAL CELEuttA SAMPLE
 
 let locations;
 let females, femalesTable;
 let tSNEimages = [];
-let tSNEmode;
+var tSNEmode;
 let closestImage, closestDistance, winner;
 let xRows = 40;
 let yRows = 25;
@@ -13,6 +13,7 @@ let datasetSize = 1000
 let xMarg = 5;
 let yMarg = 5;
 let scaleFactor;
+var showOverlays
 
 let picScale = cWidth/xRows
 
@@ -56,31 +57,22 @@ function setup() {
 
 	/// BUTTON VALUES ///
 	selected = "emotion"
-	showOverlays = true
+	showOverlays = false
+	makeDOMelements()
 	///////////////////////
-	makeDOMelements();
 
 }
 
 function makeDOMelements(){
 	// slider
-	scaleSlider = createSlider(1, 3, 1)
-	scaleSliderX = cWidth/2
-	scaleSliderY = 1050
+	scaleSlider = createSlider(1, 5, 1)
+	scaleSliderX = (width/2)+280;
+	scaleSliderY = 1110;
 	scaleSliderW = cWidth/20;
 	scaleSlider.position(scaleSliderX, scaleSliderY)
 	scaleSlider.style('width', 'scaleSliderW')
 	scaleSlider.parent('tSNEp5')
 	// mode choice
-	modeRadio = createRadio();
-	modeRadio.option('gender prediction');
-	modeRadio.option('emotion prediction');
-	modeRadio.style('width', '190px');
-	// show overlays
-	overlayRadio = createRadio();
-	overlayRadio.option('show overlays');
-	overlayRadio.option('hide overlays');
-	overlayRadio.style('width', '190px');
 }
 
 function getImages(){
@@ -136,8 +128,6 @@ function draw() {
 	closestDistance = 10000
 	winner = []
 
-	if (modeRadio.value()) {selected = (modeRadio.value() == "gender prediction") ? "gender" : "emotion"}
-	if (overlayRadio.value()) {showOverlays = (overlayRadio.value() == "show overlays") ? true : false}
 
 	push();
 	scaleFactor = scaleSlider.value()
@@ -301,4 +291,20 @@ function drawCaption(x, y, w, h, num, gender, emotion){
 	strokeWeight(3/scaleFactor)
 	stroke(outlineColor)
 	rect(x, y - h, w, 3*h/2) // for entire tooltip
+}
+
+function switchMode(value){
+	print("1")
+
+	if(value == "emotion"){
+		selected = "emotion" 
+	} else if(value == "gender"){
+		selected = "gender"
+	} else if (value == "true"){
+		showOverlays = true 
+	} else (
+		showOverlays = false 
+	)
+
+
 }

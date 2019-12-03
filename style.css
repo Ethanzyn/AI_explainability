@@ -245,7 +245,8 @@ canvas{
 #tSNEp5 {
     margin: auto;
     max-width: 1000px;
-    padding-top:50px;
+    padding-top:10px;
+    padding-bottom:20px
 
 
 }
@@ -315,7 +316,8 @@ canvas{
     padding-top:20px;
     margin:0px;
     width: 300px;
-    font-size: 18px;
+    font-size: 16px;
+    line-height: 24px;
     border-right:solid 1px;
     padding-right:20px;
 
@@ -334,3 +336,26 @@ canvas{
 
 
 }
+
+.subtext{
+
+    width: 900px;
+    text-align: center;
+    margin:auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    font-weight:300;
+    padding-top:20px;
+    
+
+
+}
+
+#prediction {
+    padding-top:50px;
+    margin: auto;
+    max-width: 1000px;
+    padding-bottom:20px;
+}
+
+

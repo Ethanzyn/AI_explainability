@@ -13,13 +13,14 @@
 </head>
 
 <body>
-  <div class=section>
+  <div id = "tSNEsection" class=section>
   <ul class = "nav"> 
       <li id = 'genderVis'><a href="../index.html">Gender Recognition</a></li>
       <li id = 'emotionVis'><a href="index.html">Emotion Recognition</a></li>
       <li id = 'mapVis'><a href="../tSNE/index.html">tSNE Decision Map</a></li>
    </ul>
    <h2 class = "title2" > Let's take a look at how AI sees human emotions </h2>
+   <h3 class = "subtext" style = "text-align: center">This AI model predicts six emotions: angry, happy, sad, disgust, surprise and netrual with a confidence level for each prediction. Try exploring the treemap below and hover to see how AI comes up with those predictions.</h3>
    <div id = "changeImage" onclick="changeImage()"> click to switch image </div>
   <div id ="visComponent">
   <!-- Create a div where the graph will take place -->
@@ -28,7 +29,12 @@
     <div id="my_dataviz"></div>
   </div> 
 
+
   </div>
+  <div class = "footer">
+    <p id="copyright"> &copy Ethan Ye, Izzy Stephen, Sachine Grover<p>
+    <p id="credit"> <a href="http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html">Dataset</a>:Large-scale CelebFaces Attributes (CelebA) Dataset <br/> <a href = "https://github.com/oarriaga/face_classification">Model</a>:CNN model &nbsp;<a href = "https://github.com/marcotcr/lime">Attribution</a>:Local Interpretable Model-Agnostic Explanations (LIME) </p>
+</div>>
 
   <script>
   var margin = {top: 2, right: 2, bottom: 2, left: 2},
