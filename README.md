@@ -1,5 +1,7 @@
 # Visual exploration for explaining image classification
-A working demo can be found [here](https://ethanzyn.github.io/AI_explainability).
+A working demo can be found [here](https://ethanzyn.github.io/AI_explainability) and here is a short video explaining the different featues of the visualization, 
+
+<a href="https://youtu.be/lkqLJnafMbg" target="_blank"><img src="../master/video_screenshot.JPG" width="450" alt="project video"/></a>
 
 Pretrained gender and emotion classification models borrowed from [here](https://github.com/oarriaga/face_classification). The explanation engine used for generating model explanation is [LIME](https://github.com/marcotcr/lime).
 
