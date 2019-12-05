@@ -145,8 +145,9 @@ function draw() {
 		let h = w
 		image(img, x, y, w, h)
 
-	    // calculate distance from the mouse
-	    let currDistance = distance(mouseX/scaleFactor, mouseY/scaleFactor, x + w/2, y + h/2)
+		// calculate distance from the mouse
+		if((mouseX<width) && (mouseX>0) && (mouseY<height) && (mouseX > 0)){
+			let currDistance = distance(mouseX/scaleFactor, mouseY/scaleFactor, x + w/2, y + h/2)
 	    //console.log(["at i = ", i, " distance = ", currDistance])
 	    if (currDistance < closestDistance){
 	    	closestDistance = currDistance
@@ -155,6 +156,10 @@ function draw() {
 	    if (closestImage == num){
 	    	winner = curr
 	    }
+
+
+		} 
+	    
 
 	    // overlays
 	    if (showOverlays){
