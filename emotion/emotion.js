@@ -158,7 +158,6 @@ function createExample(){
       noiseDetail(2,0.6)
       noiseV += 0.2 
       noiseV2 += 0.1
-      
       let n = round(noise(noiseV,noiseV2)) 
       exampleGrid[i].push(n)
     }
@@ -168,7 +167,6 @@ function createExample(){
 }
 
 
-
 function setup (){
   var canvas = createCanvas(450, 450);
   canvas.parent('my_image');
@@ -176,8 +174,6 @@ function setup (){
   img = loadImage("../Dataset/img_align_celeba/1001.jpg")
   createExample();
   selectedEmotion = 0;
-
-  
 }
 
 function getMask(imgName){
@@ -186,7 +182,6 @@ function getMask(imgName){
 }
 
 function changeImage(){
-
   var rNum = String(round(random(1000,2000)))
   var url = "../Dataset/img_align_celeba/" + rNum + ".jpg"
   var jurl = "../emotion_predictions/" + rNum + ".json"
@@ -195,17 +190,6 @@ function changeImage(){
   getMask(rNum)
 
 }
-
-// function mousePressed(){
-//   if((mouseX < 400) && (mouseY < 400)){
-//       print(mouseX)
-//       changeImage();
-     
-//   }
-
-// }
-
-  
 
 
 function drawBorder(){
@@ -221,20 +205,19 @@ function drawBorder(){
   fill(255);
   textSize(20);
   text(selectedEmotion, 12,25)
-
-
 }
+
 
 function draw(){
   background(0)
-
   image(img,0,0,450,450)
   if((selectedEmotion !== 0) && (selectedEmotion !== undefined) ){
-    print(selectedEmotion)
-    drawBorder();
+    fetchColor = color(selectedColor)
+    
     emotion = String(selectedEmotion)
     grid = mask[emotion]
     drawGrid(fetchColor)
+    drawBorder();
   }
 
   
