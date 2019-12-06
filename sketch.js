@@ -62,10 +62,9 @@ function setup(){
     imgNum = num + ".jpg"
     genderJSON = loadJSON("face_classification/src/gender_results_1000.json")
     emotionJSON = loadJSON("face_classification/src/emotion_results_1000.json")
-
-    getMask(num)
-    
+    getMask(num) 
   }
+
 
 function getMask(imgName){
     var jn ="lime_masks/" + imgName + ".json"
@@ -73,12 +72,14 @@ function getMask(imgName){
 }
 
 function changeImage(){
+    if(state == undefined){
+        var rNum = String(round(random(1000,2000)))
+        var url = "Dataset/img_align_celeba/" + rNum + ".jpg"
+        imgNum = rNum + ".jpg"
+        img = loadImage(url)
+        getMask(rNum)
+    }
 
-    var rNum = String(round(random(1000,2000)))
-    var url = "Dataset/img_align_celeba/" + rNum + ".jpg"
-    imgNum = rNum + ".jpg"
-    img = loadImage(url)
-    getMask(rNum)
 }
 
 
@@ -237,11 +238,12 @@ function showInstruction(){
 
 
 function changeButton(x1,x2,y1,y2){
+    
     if(buttonState  == 0 ){
-
         var buttonSection = document.getElementById("buttonSection");
-        buttonSection.removeChild(buttonSection.childNodes[1])
-        buttonSection.removeChild(buttonSection.childNodes[2])
+        while (buttonSection.firstChild) {
+            buttonSection.removeChild(buttonSection.firstChild);
+          }
 
         addElement("buttonSection","div","button",x1,x2)
         addElement("buttonSection","div","button",y1,y2)
@@ -260,12 +262,20 @@ function changeButton(x1,x2,y1,y2){
                 var tag1 = "<span id ='percent'>"
                 var tag2 = "</span>"
                 var str = ['Based on referenced area, you "think" ' + tag1+String(round(commonP*100))+"% "+tag2+"like this AI"]
+                addNewType()
                 typestuff(commonP,str)
+                var compare = document.getElementById("compare")
+                var text = document.querySelector('#compare h5')
+                text.innerHTML = "Try Again"
+
+            } else {
+                restart();
+                changeImage()
             }
         
         }
         
-    }
+    } 
 }
 
 
@@ -275,7 +285,6 @@ function addElement(parentId, elementTag, elementClass, html,id) {
     var newElement = document.createElement(elementTag);
     newElement.setAttribute('class', elementClass);
     newElement.setAttribute("id",id);
-    newElement.setAttribute("onclick","changeGrid()") 
     newElement.onclick = function(){changeGrid(this.id)}
     var h5 =  document.createElement('h5');
     h5.innerHTML = html;
@@ -304,6 +313,41 @@ function changeGrid(id){
     } 
 }
 
+function restart(){
+    state = undefined
+    buttonState = 0; 
+    common = 0; 
+    for(let i=0; i < gridSize; i++){
+        for(let j=0; j < gridSize; j++){
+         grid[i][j] = 0; 
+        }
+      }
+    var tag1 = "<span class ='Man'> man </span>"
+    var tag2 = "<span class = 'Woman'> woman</span>"
+    var str = ['Pretend that you are an AI system,does the celebrity looks more like a ' + tag1 + "or " + " a " + tag2]
+    addNewType()
+    typestuff(commonP,str)
+    var legend = document.getElementById("legend")
+    legend.parentNode.removeChild(legend);
+    frameC = undefined;
+    frame = undefined;
+    var buttonSection = document.getElementById("buttonSection");
+    while (buttonSection.firstChild) {
+        buttonSection.removeChild(buttonSection.firstChild);
+      }
+    addElement("buttonSection","div","button","Woman👱🏼‍♀️","woman")
+    addElement("buttonSection","div","button","Man👱🏼‍♀️","man")
+    var woman = document.getElementById("woman")
+    var man = document.getElementById("man")
+    woman.setAttribute('onclick',"selection('woman',this)")
+    man.setAttribute('onclick',"selection('man',this)")
+    woman.setAttribute('onmouseover',"buttonHover('woman',this)")
+    man.setAttribute('onmouseover',"buttonHover('man',this)")
+    woman.setAttribute('onmouseout',"buttonNormal(this)")
+    man.setAttribute('onmouseout',"buttonNormal(this)")
+ 
+}
+
 function addLegend(){
     var elem = document.createElement("img")
     if(humanPrediction == "false"){
@@ -323,6 +367,7 @@ function addLegend(){
 function mouseDragged(){
 
     if(state == "draw"){
+
         changeButton("Reset","reset","Done","done");
         for(let i=0; i < gridSize; i++){
             for(let j=0; j < gridSize; j++){
@@ -340,14 +385,16 @@ function mouseDragged(){
    
 }
 
+
+
 function typestuff(t,string){
 
     var tag1 = "<span class =" +t + ">"  
     var tag2 = "</span>"
 
-    document.getElementById("typed2").innerHTML = ""
+    document.getElementById("typed2").innerHTML = null
     
-    if(string != undefined ){
+    if(string){
         var typing= string
     } else {
         var typing = ['Hopefully that’s not hard.So, what parts of the face make you think this is a ' +tag1+t+tag2+"?"]
@@ -355,11 +402,22 @@ function typestuff(t,string){
 
     var options = {
         strings: typing,
-        typeSpeed: 20,
-        backSpeed: 30,
-        loop: false,
-        }
-    var typed2 = new Typed("#typed2", options);
+        typeSpeed: 10,
+        backSpeed: 10,
+        loop: false,}
+        // showCursor: false,}
+    var typed = new Typed("#typed2", options);
+}
+
+function addNewType(){
+    var title2 = document.getElementsByClassName("title2")[0]
+    while (title2.firstChild) {
+        title2.removeChild(title2.firstChild);
+      }
+    var newT = document.createElement("span")
+    newT.setAttribute("id", "typed2")
+    title2.appendChild(newT)
+
 }
 
 function drawFrame(c,t) {
@@ -444,9 +502,52 @@ function selection(x,y){
         y.style.backgroundColor = "#F5A623"
     }
 
+
+    // var cursor = document.getElementsByClassName("typed-cursor typed-cursor--blink")[0]
+    // cursor.parentNode.removeChild(cursor)
+    addNewType()
     typestuff(x)
+    
 
 }
+
+
+// function selection1(x){
+//     document.getElementById('genderNote').style.display = "none";
+//     var buttons = document.getElementById('buttonSection')
+//     var all = document.getElementsByClassName("button");
+//     for (var i = 0; i < all.length; i++) {
+//         all[i].style.backgroundColor = 'transparent';
+//       }
+ 
+//     if(state != "draw"){
+//         showInstruction()
+
+//     }
+//     state = "draw"
+
+    
+//     frame = x
+//     if(x == 'woman'){
+//         var y = buttons.firstChild
+//         frameC = color("#3BA4D6")
+//         hex ="#3BA4D6" 
+//         y.style.backgroundColor = "#3BA4D6"
+//     } else {
+//         frameC = color('#F5A623')
+//         hex ="#F5A623" 
+//         var y = buttons.lastChild
+//         y.style.backgroundColor = "#F5A623"
+//     }
+//     y.style.borderWidth = "2px"
+
+//     // var cursor = document.getElementsByClassName("typed-cursor typed-cursor--blink")[0]
+//     // cursor.parentNode.removeChild(cursor)
+//     addNewType()
+//     typestuff(x)
+    
+
+// }
 
 
 
