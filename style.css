@@ -360,3 +360,68 @@ canvas{
 }
 
 
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+
+    .nav{
+        display: block;
+        background: black;
+        /* border-bottom: 1px;  */
+        margin-top:0px;
+        margin-right:0px;
+        padding-left:0px;
+        /* border-bottom: 1px solid white; */
+    
+    }
+
+    li {
+        list-style-type: none;
+        border-bottom: 1px solid white;
+        padding-top:16px;
+        padding-bottom: 24px;
+        padding-left:10px;
+    
+    }
+
+    .footer {
+        display: block;
+        background-image: url("grid.png");
+        background-repeat: repeat;
+        background-size:cover;
+        margin:0px;
+        padding:0px;
+        border:solid 1px;
+        border-top:none;
+        border-color: white;
+        cursor: url('cursor.gif'),auto;
+        
+    
+    }
+
+    #copyright {
+
+      
+        border:0px;
+        width: 300px;
+        font-size: 16px;
+        padding-bottom: 20px;
+        line-height: 24px;
+
+    
+    }
+    
+    #credit {
+        padding-top:20px;
+        padding-bottom:20px;
+        padding-left: 40px;
+        width:100%;
+        border:1px solid white;
+    }
+
+    
+
+
+
+  }
+
+
