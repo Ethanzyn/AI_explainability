@@ -20,6 +20,7 @@ body{
     border:solid 1px;
     border-color: white;
     height:800px;
+    position:relative;
     
 }
 
@@ -106,22 +107,33 @@ li {
 }
 
 #scrollSign{
+
     font-size: 14px;
     text-align: center;
     padding-top:50px;
     /* font-family: 'IBM Plex Mono', monospac; */
     font-family: 'Work Sans', sans-serif;
     font-weight:400;
-
     color:white;
+}
+
+#scroll{
+
+    position:absolute;
+  
+    width:150px;
+    margin-right:75px;
+    left:50%;
+    transform:translate(-50%,-50%);
+    bottom:-27%;
+
+
 }
 
 
 
 #scrollLine {
-    display:block;
-    margin:auto;
-    height:70px;
+    
 }
 
 .section {
@@ -154,7 +166,7 @@ li {
 
 #drawMoji {
     position:absolute;
-    bottom:-60%;
+    top:50%;
     margin:auto;
     left:15%;
     font-size: 64px;
@@ -164,7 +176,7 @@ li {
 
 #instruction {
     position:absolute;
-    bottom:-60%;
+    top:50%;
     margin:auto;
     right:10%;
     text-align: center;
@@ -226,12 +238,12 @@ canvas{
 
 
 #my_datavis {
-    float: left;
+    /* float: left; */
+    /* margin:auto; */
     display:flex;
 }
 
 #my_image {
-
     display: flex;
     padding-right: 5px;
 }
@@ -253,9 +265,13 @@ canvas{
 
 
 #tSNEsection {
-    height: 1000px;
+    height: 1200px;
 
 }
+
+#emoSection {
+    height:1000px;
+} 
 
 #changeImage {
     text-decoration: underline;
@@ -281,17 +297,21 @@ canvas{
 #legend {
     width:250px;
     position: absolute;
-    bottom: -450px;
+    top: 40%;
     margin: auto;
     right:10%;
     animation:fadein 1s ease-in;
+}
+
+#genderSection {
+    position:relative;
 }
 
 #genderNote {
 
     width:250px;
     position:absolute;
-    bottom:-85%;
+    top:60%;
     animation:fadein 1s ease-in;
     margin-left: auto; 
     margin-right:auto;
@@ -299,9 +319,6 @@ canvas{
     right:0;
     /* padding-right:700px; */
     margin-right:65%;
-
-
-
 
 }
 
@@ -328,6 +345,7 @@ canvas{
     padding-left: 60px;
     padding-top:20px;
     margin:0px;
+    
     line-height: 24px;
 }
 
@@ -359,9 +377,21 @@ canvas{
     font-weight: 500;
 }
 
+/* #tSNEp5 input {
+    margin:auto;
+    width:200px;
+    height:1000px;
+
+    
+} */
+
 
 @media only screen and (max-width: 768px) {
     /* For mobile phones: */
+
+    body {
+        margin:0;
+    }
 
     .nav{
         display: block;
@@ -388,8 +418,10 @@ canvas{
         background-image: url("grid.png");
         background-repeat: repeat;
         background-size:cover;
+        width:100%;
         margin:0px;
         padding:0px;
+        height:220px;
         border:solid 1px;
         border-top:none;
         border-color: white;
@@ -414,11 +446,60 @@ canvas{
         padding-top:20px;
         padding-bottom:20px;
         padding-left: 40px;
-        width:100%;
-        border:1px solid white;
+        padding-bottom: 40px;
+        margin:0px;
+        padding-right:20px;
+        border-top:1px solid white;
     }
 
+    #emoSection {
+        height:1550px;
+    } 
+
+    #visComponent {
+        display:block;
+        margin: auto;
+        max-width: 900;
+    }
+
+    #my_dataviz {
+        /* float: left; */
+        /* margin:auto; */
+        width:450px;
+  
+        margin:auto;
+        display:flex;
+    }
+
+
+    #changeImage {
+        width:450px;
+    }
     
+    .subtext {
+        width:90%;
+    }
+
+    #tSNEsection {
+        height: 1500px;
+    
+    }
+
+    #prediction {
+        padding-top:50px;
+        margin: auto;
+        max-width: 80vw;
+        padding-bottom:20px;
+        font-weight: 500;
+    }
+
+    #tSNEp5 {
+        margin: auto;
+        max-width: 100vw;
+        padding-top:10px;
+        padding-bottom:20px
+    
+    }
 
 
 

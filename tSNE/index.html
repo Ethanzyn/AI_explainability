@@ -12,7 +12,7 @@
 </head>
 
 <body>
-	<div id = "tSNEsection" class=section style = "height:1200px">
+	<div id = "tSNEsection" class=section >
 		<ul class = "nav"> 
 			<li id = 'genderVis'><a href="../index.html">Gender Recognition</a></li>
 			<li id = 'emotionVis'><a href="../emotion/index.html">Emotion Recognition</a></li>
@@ -22,9 +22,7 @@
 		<div>
 
 			<h2 class = "title2"> <span id ="typed2">What features drive AI predictions?</h2>
-
 			<h3 class = "subtext" style = "text-align: center">By extracting feature vectors, we can get a sense of how the model has learned to classify faces. t-distributed Stochastic Neighbor Embedding (tSNE) can be used to visualize high-dimensional data &mdash; like the hundreds of features the model encodes for each image &mdash; in two dimensions.<br><br>Try exploring the grid below, and see if you can identify any surprising groupings.</h3>
-			
 			<div id = "prediction">
 			<input type = radio class = "radioButton" name = "prediction" value = "emotion" onclick = "switchMode(this.value )" checked> Emotion Prediction </input>
 			<input type = radio class = "radioButton" name = "prediction" value = "gender" onclick = "switchMode(this.value )" > Gender Prediction </input>
@@ -32,10 +30,7 @@
 			<input type = radio class = "radioButton" name = "overlay" value = "false" onclick = "switchMode(this.value)" checked> Hide ovderlays </input>
 			</div>
 			<div id="tSNEp5"></div>
-			<p style="text-align:center" >zoom</p>
-
 		</div>
-
 	</div>
 	<div class = "footer">
         <p id="copyright"> &copy Ethan Ye, Izzy Stephen, Sachine Grover<p>

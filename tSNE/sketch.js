@@ -1,5 +1,4 @@
 // MAIN SKETCH FOR FINAL CELEuttA SAMPLE
-
 let locations;
 let females, femalesTable;
 let tSNEimages = [];
@@ -14,21 +13,19 @@ let xMarg = 5;
 let yMarg = 5;
 let scaleFactor;
 var showOverlays
-
 let picScale = cWidth/xRows
-
 let selected;
 let scaleSlider;
 let scaleSliderY, scaleSliderX, scaleSliderW;
-
 let outlineColor, femaleColor;
 let angryColor, happyColor, sadColor, fearColor, surpriseColor, neutralColor, disgustColor;
 let overlayAlpha = 65;
-
 let emotionAdjectiveDict = {"angry" : "angry", "happy" : "happy", "surprise" : "surprised",
 							"neutral" : "neutral", "disgust" : "disgusted", "fear" : "fearful",
 							"sad" : "sad"}
 
+
+// p5.js initial functions 
 function preload() {
 	locations = loadJSON("assets/allDataFinal.json")
 	sourceCode = loadFont("assets/SourceCodePro-Regular.ttf")
@@ -58,23 +55,26 @@ function setup() {
 	/// BUTTON VALUES ///
 	selected = "emotion"
 	showOverlays = false
-	makeDOMelements()
+	// makeDOMelements()
 	///////////////////////
 
 }
 
-function makeDOMelements(){
-	// slider
-	scaleSlider = createSlider(1, 5, 1)
-	scaleSliderX = (width/2)+280;
-	scaleSliderY = 1110;
-	scaleSliderW = cWidth/20;
-	scaleSlider.position(scaleSliderX, scaleSliderY)
-	scaleSlider.style('width', 'scaleSliderW')
-	scaleSlider.parent('tSNEp5')
-	// mode choice
-}
+// previous scale function(keep in case still need to the scaler feature)
+// function makeDOMelements(){
+// 	// slider
+// 	scaleSlider = createSlider(1, 5, 1)
+// 	scaleSliderX = 500;
+// 	scaleSliderY = cHeight;
+// 	scaleSliderW = cWidth/20;
+// 	scaleSlider.position(scaleSliderX, scaleSliderY)
+// 	scaleSlider.style('width', 'scaleSliderW')
+// 	scaleSlider.parent('tSNEp5')
+// 	// mode choice
+// }
 
+
+// get all the images 
 function getImages(){
 	let keys = [];
    	for(let k in locations) keys.push(k);
@@ -127,11 +127,9 @@ function draw() {
 	closestImage = 0
 	closestDistance = 10000
 	winner = []
-
-
 	push();
-	scaleFactor = scaleSlider.value()
-	scale(scaleFactor)
+	// scaleFactor = scaleSlider.value()
+	// scale(scaleFactor)
 
 	for (let i = 0; i < tSNEimages.length; i++){
 		let curr = tSNEimages[i]
@@ -159,7 +157,6 @@ function draw() {
 
 
 		} 
-	    
 
 	    // overlays
 	    if (showOverlays){
@@ -211,7 +208,6 @@ function drawOverlay(x, y, w, h, gender, emotion){
 				fill(fearColor)
 				break
 		}
-
 	}
 	rect(x, y, w, h)
 }
@@ -274,6 +270,7 @@ function drawWinner(winner){
 
 }
 
+// draw caption for images 
 function drawCaption(x, y, w, h, num, gender, emotion){
 	textAlign(LEFT, TOP)
 	// white rect
@@ -298,6 +295,8 @@ function drawCaption(x, y, w, h, num, gender, emotion){
 	rect(x, y - h, w, 3*h/2) // for entire tooltip
 }
 
+// switch modes from emotion to gender or vice versa
+
 function switchMode(value){
 	print("1")
 
@@ -313,3 +312,21 @@ function switchMode(value){
 
 
 }
+
+// responsive control 
+function mediaResponsive(x,y) {
+	if (x.matches) { // If media query matches
+		cWidth = 700 
+	} else {
+		cwidth = 1000
+	}
+
+	if(y.matches) {
+		alert("this visualization is suggested to view at a wider screen size")
+	}
+  }
+  
+  var x = window.matchMedia("(max-width: 768px)")
+  var y = window.matchMedia("(max-width:680px)")
+  mediaResponsive(x,y) // Call listener function at run time
+  x.addListener(mediaResponsive) // Attach listener function on state changes

@@ -16,13 +16,12 @@ var margin = {top: 0, right: 0, bottom: 0, left: 0},
 // read json data
 var JSONurl
 
-
-
-
+// intial JSON data 
 if(JSONurl == undefined){
   JSONurl = "../emotion_predictions/1001.json"
 }
 
+// use d3.js library to add visual charts 
 var svg = d3.select("#my_dataviz")
 .append("svg")
   .attr("width", width + margin.left + margin.right)
@@ -35,7 +34,6 @@ var svg = d3.select("#my_dataviz")
 d3.json(JSONurl, function(data) {
   // Give the data to this cluster layout:
   var root = d3.hierarchy(data).sum(function(d){ return d.value})
-  
   // Here the size of each leave is given in the 'value' field in input data
   // Then d3.treemap computes the position of each element of the hierarchy
   d3.treemap()
@@ -81,7 +79,6 @@ d3.json(JSONurl, function(data) {
 
   // and to add the text labels
   texts 
- 
     .append("text")
       .attr("y", function(d){ return (d.y0+d.y1)/2 }) 
       .attr("fill", "white")
@@ -109,7 +106,7 @@ d3.json(JSONurl, function(data) {
       .attr("font-size", function(d) { return subtext(d.data.value);})
       
 
-  
+  // customize font size base on area of the treepmap section 
   function findFontSize(value){
     if(value < 0.1) {
       if(value < 0.02){
@@ -137,8 +134,6 @@ d3.json(JSONurl, function(data) {
 })
 
 //p5.js 
-
-
 var exampleGrid = []
 var gridSize = 24
 
@@ -160,11 +155,12 @@ function createExample(){
 
 }
 
-// function preload(){
-//   getMask("1001")
+// initial function of the p5 sketch 
+function preload(){
+  getMask("1001")
   
   
-// }
+}
 
 function setup (){
   var canvas = createCanvas(450, 450);
@@ -175,22 +171,14 @@ function setup (){
   selectedEmotion = 0;
 }
 
+// get attribution map from ML prediction 
 function getMask(imgName){
   var jn ="../lime_masks/" + imgName + ".json"
   mask = loadJSON(jn)
 }
 
-function changeImage(){
-  var rNum = String(round(random(1000,2000)))
-  var url = "../Dataset/img_align_celeba/" + rNum + ".jpg"
-  var jurl = "../emotion_predictions/" + rNum + ".json"
-  JSONurl = jurl 
-  img = loadImage(url)
-  getMask(rNum)
 
-}
-
-
+// draw corresponding borders 
 function drawBorder(){
   fetchColor = color(selectedColor)
   stroke(fetchColor);
@@ -218,12 +206,9 @@ function draw(){
     drawGrid(fetchColor)
     drawBorder();
   }
-
-  
-
-
 }
 
+// draw grid map from mask 
 function drawGrid(color){
   var c = color;
   c.setAlpha(150)
@@ -247,11 +232,11 @@ function drawGrid(color){
 
 }
 
+// switch images and intialize d3 chart 
 function changeImage() {
   var rNum = String(round(random(1000,2000)))
   var url = "../Dataset/img_align_celeba/" + rNum + ".jpg"
   var jurl = "../emotion_predictions/" + rNum + ".json"
-  console.log(jurl)
   JSONurl = jurl 
   img = loadImage(url)
   getMask(rNum)
@@ -268,13 +253,13 @@ function changeImage() {
       .padding(0)
       (root)
 
+    // remove original chart 
     var rect = svg.selectAll('rect').data(root.leaves())
     var texts = svg.selectAll('text').data(root.leaves())
-
-
     rect.exit().remove();
     rect.enter().append('rect')
 
+    // add transition 
     rect.transition()
       .duration(750)
       .attr('x', function (d) { return d.x0; })
@@ -313,7 +298,6 @@ function changeImage() {
       .attr("fill", "white")
       .attr("text-anchor", "middle")
 
-    
       svg
         .selectAll("vals")
         .data(root.leaves())
@@ -351,10 +335,7 @@ function changeImage() {
         return String(fs)
       }
     }
-  
-  
   })
-  
 
 }
 
