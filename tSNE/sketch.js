@@ -172,6 +172,17 @@ function draw() {
 	//drawSliderBg();
 }
 
+function changeImage(){
+	var rNum = String(round(random(1000,2000)))
+	var url = "../Dataset/img_align_celeba/" + rNum + ".jpg"
+	var jurl = "../emotion_predictions/" + rNum + ".json"
+	JSONurl = jurl 
+	img = loadImage(url)
+	getMask(rNum)
+  
+  }
+  
+
 // draw overlays
 function drawOverlay(x, y, w, h, gender, emotion){
     noStroke();

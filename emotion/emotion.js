@@ -15,10 +15,16 @@ var margin = {top: 0, right: 0, bottom: 0, left: 0},
 
 // read json data
 var JSONurl
+function preload(){
+  getMask("1001")
+  selectedEmotion = 0;
+  
+}
 
 // intial JSON data 
 if(JSONurl == undefined){
   JSONurl = "../emotion_predictions/1001.json"
+
 }
 
 // use d3.js library to add visual charts 
@@ -155,12 +161,15 @@ function createExample(){
 
 }
 
+<<<<<<< HEAD
 // initial function of the p5 sketch 
 function preload(){
   getMask("1001")
   
   
 }
+=======
+>>>>>>> parent of 34fddc3... fix bug
 
 function setup (){
   var canvas = createCanvas(450, 450);
@@ -336,6 +345,9 @@ function changeImage() {
       }
     }
   })
+
+  
+    
 
 }
 

@@ -386,6 +386,7 @@ canvas{
 } */
 
 
+<<<<<<< HEAD
 @media only screen and (max-width: 768px) {
     /* For mobile phones: */
 
@@ -506,3 +507,5 @@ canvas{
   }
 
 
+=======
+>>>>>>> parent of 34fddc3... fix bug
