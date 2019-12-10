@@ -161,15 +161,6 @@ function createExample(){
 
 }
 
-<<<<<<< HEAD
-// initial function of the p5 sketch 
-function preload(){
-  getMask("1001")
-  
-  
-}
-=======
->>>>>>> parent of 34fddc3... fix bug
 
 function setup (){
   var canvas = createCanvas(450, 450);
