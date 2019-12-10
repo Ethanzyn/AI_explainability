@@ -55,23 +55,23 @@ function setup() {
 	/// BUTTON VALUES ///
 	selected = "emotion"
 	showOverlays = false
-	// makeDOMelements()
+	//makeDOMelements()
 	///////////////////////
 
 }
 
 // previous scale function(keep in case still need to the scaler feature)
-// function makeDOMelements(){
-// 	// slider
-// 	scaleSlider = createSlider(1, 5, 1)
-// 	scaleSliderX = 500;
-// 	scaleSliderY = cHeight;
-// 	scaleSliderW = cWidth/20;
-// 	scaleSlider.position(scaleSliderX, scaleSliderY)
-// 	scaleSlider.style('width', 'scaleSliderW')
-// 	scaleSlider.parent('tSNEp5')
-// 	// mode choice
-// }
+function makeDOMelements(){
+	// slider
+	scaleSlider = createSlider(1, 5, 1)
+	scaleSliderX = 500;
+	scaleSliderY = cHeight;
+	scaleSliderW = cWidth/20;
+	scaleSlider.position(scaleSliderX, scaleSliderY)
+	scaleSlider.style('width', 'scaleSliderW')
+	scaleSlider.parent('tSNEp5')
+	// mode choice
+}
 
 
 // get all the images 
@@ -123,12 +123,13 @@ function distance(x1, y1, x2, y2){
 }
 
 function draw() {
+	
 	background(0)
 	closestImage = 0
 	closestDistance = 10000
 	winner = []
 	push();
-	// scaleFactor = scaleSlider.value()
+	scaleFactor = 1
 	// scale(scaleFactor)
 
 	for (let i = 0; i < tSNEimages.length; i++){
@@ -171,17 +172,6 @@ function draw() {
 	pop();
 	//drawSliderBg();
 }
-
-function changeImage(){
-	var rNum = String(round(random(1000,2000)))
-	var url = "../Dataset/img_align_celeba/" + rNum + ".jpg"
-	var jurl = "../emotion_predictions/" + rNum + ".json"
-	JSONurl = jurl 
-	img = loadImage(url)
-	getMask(rNum)
-  
-  }
-  
 
 // draw overlays
 function drawOverlay(x, y, w, h, gender, emotion){
